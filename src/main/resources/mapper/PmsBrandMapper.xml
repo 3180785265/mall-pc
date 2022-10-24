@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mall.dao.PmsBrandDao">
+
+    <select id="recommendBrand" resultType="com.itheima.mall.domain.PmsBrand">
+
+        SELECT pd.*
+        FROM
+             sms_home_brand shb
+             LEFT JOIN pms_brand pd ON shb.brand_id = pd.id
+
+        WHERE
+              shb.recommend_status = 1
+               AND pd.show_status = 1
+        ORDER BY
+              shb.sort DESC
+        limit #{pageNum},#{pageSize}
+    </select>
+</mapper>
