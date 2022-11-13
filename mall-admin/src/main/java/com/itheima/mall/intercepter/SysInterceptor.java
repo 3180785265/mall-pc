@@ -1,7 +1,7 @@
 package com.itheima.mall.intercepter;
 
 import com.itheima.mall.common.BaseContext;
-import com.itheima.mall.exception.BusException;
+import com.itheima.mall.common.exception.BusException;
 import com.itheima.mall.util.JwtUtils;
 import io.jsonwebtoken.Claims;
 import org.apache.commons.lang3.StringUtils;
