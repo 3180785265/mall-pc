@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author 小刘
- * @since 2022-10-24
+ * @since 2022-11-14
  */
 @RestController
 @RequestMapping("/pmsBrand")

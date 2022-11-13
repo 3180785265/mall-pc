@@ -127,4 +127,15 @@ class MallApplicationTests {
         }
     }
 
+
+    @Test
+    public void  test1(){
+
+//        java的基本数据类型的存储范围
+//        整数： 1 byte   2 short   4 int    8 long
+//        浮点型小数：  单精度 flot 4         双精度 double 8字节
+
+        System.out.println(true^true);
+    }
+
 }
