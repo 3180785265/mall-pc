@@ -1,31 +1,59 @@
-package com.itheima.mall;
+package com.itheima.mall.controller;
 
 import com.aliyun.oss.*;
 import com.aliyun.oss.common.comm.Protocol;
-import com.aliyun.oss.model.CannedAccessControlList;
-import com.aliyun.oss.model.CreateBucketRequest;
-import com.aliyun.oss.model.DataRedundancyType;
-import com.aliyun.oss.model.StorageClass;
+import com.aliyun.oss.model.*;
+import com.itheima.mall.common.R;
 import com.itheima.mall.properties.AliyunOssProperties;
-import org.junit.jupiter.api.Test;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
-@SpringBootTest
-class MallApplicationTests {
+@RequestMapping("/common/")
+@RestController
+@Slf4j
+public class CommonController {
+
     @Autowired
     private AliyunOssProperties properties;
 
-    @Test
-    void contextLoads() {
+    @PostMapping("/upload")
+    public R upload(@RequestParam("file") MultipartFile multipartFile) throws IOException {
+        if(multipartFile.isEmpty()){
+            return R.error("图片为空");
+        }
+        if(multipartFile.getSize()>1024*1024*5){
+            return R.error("图片超过5M");
+        }
+        log.info("getContentType-{}",multipartFile.getContentType());
+
+        if(!multipartFile.getContentType().equals("image/jpeg")){
+            return R.error("图片必须为 .image 或 /jpeg");
+        }
+
+
+
+
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("imageName",multipartFile.getOriginalFilename());
+        String imgUrl = ossUpload(multipartFile);
+        map.put("imgUrl",imgUrl);
+
+        return R.success(map);
+    }
+
+    private String ossUpload(MultipartFile multipartFile) throws IOException {
         // yourEndpoint填写Bucket所在地域对应的Endpoint。以华东1（杭州）为例，Endpoint填写为https://oss-cn-hangzhou.aliyuncs.com。
         OSS ossClient = null;
         try {
@@ -37,53 +65,60 @@ class MallApplicationTests {
             // 创建ClientConfiguration。ClientConfiguration是OSSClient的配置类，可配置代理、连接超时、最大连接数等参数。
             ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
 
-        // 设置OSSClient允许打开的最大HTTP连接数，默认为1024个。
-                    conf.setMaxConnections(200);
-        // 设置Socket层传输数据的超时时间，默认为50000毫秒。
-                    conf.setSocketTimeout(10000);
-        // 设置建立连接的超时时间，默认为50000毫秒。
-                    conf.setConnectionTimeout(10000);
-        // 设置从连接池中获取连接的超时时间（单位：毫秒），默认不超时。
-                    conf.setConnectionRequestTimeout(1000);
-        // 设置连接空闲超时时间。超时则关闭连接，默认为60000毫秒。
-                    conf.setIdleConnectionTime(10000);
-        // 设置失败请求重试次数，默认为3次。
-                    conf.setMaxErrorRetry(5);
-        // 设置是否支持将自定义域名作为Endpoint，默认支持。
-                    conf.setSupportCname(true);
-        // 设置是否开启二级域名的访问方式，默认不开启。
-                    conf.setSLDEnabled(true);
-        // 设置连接OSS所使用的协议（HTTP或HTTPS），默认为HTTP。
-                    conf.setProtocol(Protocol.HTTP);
-        // 设置用户代理，指HTTP的User-Agent头，默认为aliyun-sdk-java。
-                    conf.setUserAgent("aliyun-sdk-java");
-        // 设置代理服务器端口。
-                    conf.setProxyHost("<yourProxyHost>");
-        // 设置代理服务器验证的用户名。
-                    conf.setProxyUsername("<yourProxyUserName>");
-        // 设置代理服务器验证的密码。
-                    conf.setProxyPassword("<yourProxyPassword>");
-        // 设置是否开启HTTP重定向，默认开启。
-                    conf.setRedirectEnable(true);
-        // 设置是否开启SSL证书校验，默认开启。
-                    conf.setVerifySSLEnable(true);
+            // 设置OSSClient允许打开的最大HTTP连接数，默认为1024个。
+            conf.setMaxConnections(200);
+            // 设置Socket层传输数据的超时时间，默认为50000毫秒。
+            conf.setSocketTimeout(10000);
+            // 设置建立连接的超时时间，默认为50000毫秒。
+            conf.setConnectionTimeout(10000);
+            // 设置从连接池中获取连接的超时时间（单位：毫秒），默认不超时。
+            conf.setConnectionRequestTimeout(1000);
+            // 设置连接空闲超时时间。超时则关闭连接，默认为60000毫秒。
+            conf.setIdleConnectionTime(10000);
+            // 设置失败请求重试次数，默认为3次。
+            conf.setMaxErrorRetry(5);
+            // 设置是否支持将自定义域名作为Endpoint，默认支持。
+            conf.setSupportCname(true);
+            // 设置是否开启二级域名的访问方式，默认不开启。
+            conf.setSLDEnabled(true);
+            // 设置连接OSS所使用的协议（HTTP或HTTPS），默认为HTTP。
+            conf.setProtocol(Protocol.HTTP);
+            // 设置用户代理，指HTTP的User-Agent头，默认为aliyun-sdk-java。
+            conf.setUserAgent("aliyun-sdk-java");
+            // 设置代理服务器端口。
+            conf.setProxyHost("<yourProxyHost>");
+            // 设置代理服务器验证的用户名。
+            conf.setProxyUsername("<yourProxyUserName>");
+            // 设置代理服务器验证的密码。
+            conf.setProxyPassword("<yourProxyPassword>");
+            // 设置是否开启HTTP重定向，默认开启。
+            conf.setRedirectEnable(true);
+            // 设置是否开启SSL证书校验，默认开启。
+            conf.setVerifySSLEnable(true);
 
 
 // 创建OSSClient实例。
             ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-
             // 填写Bucket名称，例如examplebucket。
             String bucketName = properties.getBucketName();
+
+
+
 
             this.createBucket(ossClient, bucketName);
 
             // 填写Object完整路径，例如exampledir/exampleobject.txt。Object完整路径中不能包含Bucket名称。
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-            String objectName=properties.getImgUrl()+"/"+format.format(new Date())+"/"+ UUID.randomUUID().toString()+".png";
+            String objectName = properties.getImgUrl() + "/" + format.format(new Date()) + "/" + UUID.randomUUID().toString() + ".png";
 
-            ossClient.putObject(bucketName, objectName, new FileInputStream(new File("C:/Users/liujj/Pictures/Saved Pictures/微信图片_20210829121759.png")));
 
-        }catch (OSSException oe) {
+
+
+            ossClient.putObject(bucketName, objectName, multipartFile.getInputStream());
+            //返回路径
+            //返回路径
+           return "https://"+properties.getBucketName()+"."+properties.getEndpoint()+"/"+objectName;
+        } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
                     + "but was rejected with an error response for some reason.");
             System.out.println("Error Message:" + oe.getErrorMessage());
@@ -99,16 +134,16 @@ class MallApplicationTests {
             // 关闭OSSClient。
             ossClient.shutdown();
         }
-
-
+        return "";
 
 
     }
-    private void createBucket(OSS ossClient,String bucketName){
+
+    private void createBucket(OSS ossClient, String bucketName) {
         // 判断存储空间examplebucket是否存在。如果返回值为true，则存储空间存在，如果返回值为false，则存储空间不存在。
         boolean exists = ossClient.doesBucketExist(properties.getBucketName());
 
-        if(!exists){
+        if (!exists) {
             //创建CreateBucketRequest对象。
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(bucketName);
 
@@ -125,17 +160,6 @@ class MallApplicationTests {
 
 
         }
-    }
-
-
-    @Test
-    public void  test1(){
-
-//        java的基本数据类型的存储范围
-//        整数： 1 byte   2 short   4 int    8 long
-//        浮点型小数：  单精度 flot 4         双精度 double 8字节
-
-        System.out.println(true^true);
     }
 
 }

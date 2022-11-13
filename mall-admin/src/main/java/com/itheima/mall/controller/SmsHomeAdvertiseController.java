@@ -77,7 +77,7 @@ public class SmsHomeAdvertiseController {
     public R  update(@PathVariable Long id,@RequestBody SmsHomeAdvertise smsHomeAdvertise){
 //        判断字段是否为null
         if(id==null){
-            return R.success("..");
+            return R.success("src/test");
         }
         smsHomeAdvertise.setId(id);
         iSmsHomeAdvertiseService.updateById(smsHomeAdvertise);
@@ -94,7 +94,7 @@ public class SmsHomeAdvertiseController {
     public R  getInfo(@PathVariable Integer id){
 //        判断字段是否为null
         if(id==null){
-            return R.success("..");
+            return R.success("src/test");
         }
         SmsHomeAdvertise smsHomeAdvertise = iSmsHomeAdvertiseService.getById(id);
 

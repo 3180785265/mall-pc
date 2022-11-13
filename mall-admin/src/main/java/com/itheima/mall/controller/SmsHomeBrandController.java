@@ -4,15 +4,11 @@ package com.itheima.mall.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itheima.mall.common.R;
-import com.itheima.mall.domain.SmsHomeAdvertise;
 import com.itheima.mall.domain.SmsHomeBrand;
 import com.itheima.mall.service.ISmsHomeBrandService;
-import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * <p>
@@ -41,6 +37,7 @@ public class SmsHomeBrandController {
         LambdaQueryWrapper<SmsHomeBrand> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(StringUtils.isNoneEmpty(brandName),SmsHomeBrand::getBrandName,brandName);
         wrapper.eq(recommendStatus!=null,SmsHomeBrand::getRecommendStatus,recommendStatus);
+        wrapper.orderByDesc(SmsHomeBrand::getId);
         Page<SmsHomeBrand> page = iSmsHomeBrandService.page(smsHomeAdvertisePage, wrapper);
         return R.success(page);
     }
