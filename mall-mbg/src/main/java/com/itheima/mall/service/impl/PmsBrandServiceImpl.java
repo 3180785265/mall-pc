@@ -1,5 +1,7 @@
 package com.itheima.mall.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.itheima.mall.dao.PmsBrandDao;
 import com.itheima.mall.domain.PmsBrand;
@@ -22,7 +24,9 @@ public class PmsBrandServiceImpl extends ServiceImpl<PmsBrandDao, PmsBrand> impl
     @Autowired
     private PmsBrandDao pmsBrandDao;
     @Override
-    public List<PmsBrand> recommendBrand(int pageNum, int pageSize) {
-        return pmsBrandDao.recommendBrand(pageNum,pageSize);
+    public IPage<PmsBrand> recommendBrand(Integer pageNum, Integer pageSize) {
+        Page<PmsBrand> pageInfo = new Page<>(pageNum, pageSize);
+        IPage<PmsBrand> iPage = pmsBrandDao.recommendBrand(pageInfo);
+        return iPage;
     }
 }

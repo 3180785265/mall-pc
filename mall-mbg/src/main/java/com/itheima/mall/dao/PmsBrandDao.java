@@ -1,7 +1,10 @@
 package com.itheima.mall.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itheima.mall.domain.PmsBrand;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,5 +18,5 @@ import java.util.List;
  */
 public interface PmsBrandDao extends BaseMapper<PmsBrand> {
 
-    List<PmsBrand> recommendBrand(int pageNum, int pageSize);
+    IPage<PmsBrand>  recommendBrand(@Param("page") Page<PmsBrand> page);
 }

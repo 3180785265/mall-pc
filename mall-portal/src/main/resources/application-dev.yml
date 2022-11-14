@@ -1,9 +1,8 @@
 server:
-  port: 8080
+  port: 9091
 spring:
   application:
-    #???? , ??
-    name: reggie_take_out
+    name: mall-portal
 
 
   datasource:

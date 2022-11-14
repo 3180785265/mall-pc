@@ -1,4 +1,4 @@
-package com.ithiema.mall;
+package com.itheima.mall;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

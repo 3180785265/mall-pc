@@ -1,4 +1,5 @@
 package com.itheima.mall.controller;
+
 import com.itheima.mall.common.R;
 import com.itheima.mall.domain.HomeContentResult;
 import com.itheima.mall.service.HomeService;

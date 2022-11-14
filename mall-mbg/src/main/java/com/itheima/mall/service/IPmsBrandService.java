@@ -1,5 +1,6 @@
 package com.itheima.mall.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.itheima.mall.domain.PmsBrand;
 
@@ -15,5 +16,5 @@ import java.util.List;
  */
 public interface IPmsBrandService extends IService<PmsBrand> {
 
-    List<PmsBrand> recommendBrand(int pageNum, int pageSize);
+    IPage<PmsBrand> recommendBrand(Integer pageNum, Integer pageSize);
 }
