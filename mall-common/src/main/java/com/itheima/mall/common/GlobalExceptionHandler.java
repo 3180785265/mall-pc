@@ -2,12 +2,17 @@ package com.itheima.mall.common;
 
 import com.itheima.mall.common.exception.BusException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 
 //全局异常处理类
-//@RestControllerAdvice
+@RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
@@ -27,6 +32,20 @@ public class GlobalExceptionHandler {
     public R<String> BusExceptionHandler(BusException ex) {
         log.error(ex.getMessage());
         return R.error(ex.getMessage());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public R<String> handleValidException(MethodArgumentNotValidException e) {
+        BindingResult bindingResult = e.getBindingResult();
+        String message = null;
+        if (bindingResult.hasErrors()) {
+            FieldError fieldError = bindingResult.getFieldError();
+            if (fieldError != null) {
+                message = fieldError.getField()+fieldError.getDefaultMessage();
+            }
+        }
+        return R.error(message);
     }
 
     //
