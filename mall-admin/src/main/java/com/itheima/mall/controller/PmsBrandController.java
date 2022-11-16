@@ -35,9 +35,11 @@ public class PmsBrandController {
 
     @GetMapping("/list")
     public R list(@RequestParam(value = "keyword", required = false) String  keyword ,
-                  @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
-                  @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum){
-
+                  @RequestParam(value = "pageSize", required = false) Integer pageSize,
+                  @RequestParam(value = "pageNum",  required = false) Integer pageNum){
+        if(pageNum==null||pageSize==null){
+            return R.success( iPmsBrandService.list());
+        }
         Page<PmsBrand> smsHomeAdvertisePage = new Page<>(pageNum,pageSize);
         LambdaQueryWrapper<PmsBrand> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(StringUtils.isNotEmpty(keyword),PmsBrand::getName,keyword);

@@ -2,13 +2,17 @@ package com.itheima.mall.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itheima.mall.common.R;
 import com.itheima.mall.domain.SmsHomeBrand;
 import com.itheima.mall.service.ISmsHomeBrandService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/home/brand")
+@Slf4j
 public class SmsHomeBrandController {
     @Autowired
     private ISmsHomeBrandService iSmsHomeBrandService;
@@ -27,7 +32,6 @@ public class SmsHomeBrandController {
 
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    @ResponseBody
     public R list(@RequestParam(value = "brandName", required = false) String brandName,
                                  @RequestParam(value = "recommendStatus", required = false) Integer recommendStatus,
                                  @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,
@@ -40,6 +44,16 @@ public class SmsHomeBrandController {
         wrapper.orderByDesc(SmsHomeBrand::getId);
         Page<SmsHomeBrand> page = iSmsHomeBrandService.page(smsHomeAdvertisePage, wrapper);
         return R.success(page);
+    }
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
+    public R create(@RequestBody List<SmsHomeBrand>smsHomeBrands) {
+        log.info("smsHomeBrands-{}",smsHomeBrands);
+
+        if(CollectionUtils.isNotEmpty(smsHomeBrands)){
+            iSmsHomeBrandService.saveBatch(smsHomeBrands);
+        }
+        return R.success("保存成功");
     }
 }
 
