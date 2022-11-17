@@ -66,7 +66,7 @@ public class PmsBrandController {
         PmsBrand pmsBrand = new PmsBrand();
         BeanUtils.copyProperties(pmsBrandParam, pmsBrand);
         pmsBrand.setId(id);
-        iPmsBrandService.save(pmsBrand);
+        iPmsBrandService.updateById(pmsBrand);
         return R.success("修改成功");
     }
 

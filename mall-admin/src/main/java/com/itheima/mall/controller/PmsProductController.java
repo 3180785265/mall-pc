@@ -1,18 +1,13 @@
 package com.itheima.mall.controller;
-
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.itheima.mall.common.R;
 import com.itheima.mall.domain.PmsProduct;
-import com.itheima.mall.dto.PmsProductParam;
 import com.itheima.mall.dto.PmsProductQueryParam;
 import com.itheima.mall.service.IPmsProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
