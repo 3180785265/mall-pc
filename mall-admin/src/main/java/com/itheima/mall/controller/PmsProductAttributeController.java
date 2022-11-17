@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * @since 2022-11-18
  */
 @RestController
-@RequestMapping("/pmsProductAttribute")
+@RequestMapping("/productAttribute")
 public class PmsProductAttributeController {
     @Autowired
     private IPmsProductAttributeService iPmsProductAttributeService;
@@ -30,16 +30,15 @@ public class PmsProductAttributeController {
     public R list(PmsProductAttributeQueryParam pmsProductAttributeParam,
                   @RequestParam(value = "pageSize", required = false) Integer pageSize,
                   @RequestParam(value = "pageNum",  required = false) Integer pageNum){
-        if(pageNum==null||pageSize==null){
-            return R.success( iPmsProductAttributeService.list());
-        }
-        Page<PmsProductAttribute> smsHomeAdvertisePage = new Page<>(pageNum,pageSize);
         LambdaQueryWrapper<PmsProductAttribute> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(StringUtils.isNotEmpty(pmsProductAttributeParam.getName()), PmsProductAttribute::getName,pmsProductAttributeParam.getName());
-
+        wrapper.eq(pmsProductAttributeParam.getProductAttributeCategoryId()!=null, PmsProductAttribute::getProductAttributeCategoryId,pmsProductAttributeParam.getProductAttributeCategoryId());
         wrapper.orderByAsc(PmsProductAttribute::getId);
 
-
+        if(pageNum==null||pageSize==null){
+            return R.success( iPmsProductAttributeService.list(wrapper));
+        }
+        Page<PmsProductAttribute> smsHomeAdvertisePage = new Page<>(pageNum,pageSize);
         Page<PmsProductAttribute> page = iPmsProductAttributeService.page(smsHomeAdvertisePage, wrapper);
         return R.success(page);
     }
