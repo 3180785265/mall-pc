@@ -40,6 +40,7 @@ public class PmsProductController {
         }
         Page<PmsProduct> smsHomeAdvertisePage = new Page<>(pageNum,pageSize);
         LambdaQueryWrapper<PmsProduct> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.isNotEmpty(pmsProductQueryParam.getKeyword()),PmsProduct::getName,pmsProductQueryParam.getKeyword());
         wrapper.like(StringUtils.isNotEmpty(pmsProductQueryParam.getProductSn()),PmsProduct::getProductSn,pmsProductQueryParam.getProductSn());
         wrapper.eq((pmsProductQueryParam.getProductCategoryId()!=null),PmsProduct::getProductCategoryId,pmsProductQueryParam.getProductCategoryId());
         wrapper.eq((pmsProductQueryParam.getBrandId()!=null),PmsProduct::getBrandId,pmsProductQueryParam.getBrandId());
@@ -51,40 +52,11 @@ public class PmsProductController {
         return R.success(page);
     }
 
-    @PostMapping("/create")
-    public R create(@Validated @RequestBody PmsProductParam PmsProductParam){
-
-        PmsProduct PmsProduct = new PmsProduct();
-        BeanUtils.copyProperties(PmsProductParam, PmsProduct);
-        iPmsProductService.save(PmsProduct);
-        return R.success("新增成功");
-    }
 
 
 
-    @PutMapping("/update/{id}")
-    public R update(@PathVariable("id")Long id,@Validated @RequestBody PmsProductParam PmsProductParam){
 
-        PmsProduct PmsProduct = new PmsProduct();
-        BeanUtils.copyProperties(PmsProductParam, PmsProduct);
-        PmsProduct.setId(id);
-        iPmsProductService.save(PmsProduct);
-        return R.success("修改成功");
-    }
 
-    @DeleteMapping("/delete/{id}")
-    public R delete(@PathVariable("id")Long id){
-
-        iPmsProductService.removeById(id);
-        return R.success("删除成功");
-    }
-
-    @GetMapping("/{id}")
-    public R getItem(@PathVariable("id")Long id){
-
-        PmsProduct byId = iPmsProductService.getById(id);
-        return R.success(byId);
-    }
 
 
 }
