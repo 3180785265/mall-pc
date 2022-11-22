@@ -45,7 +45,7 @@ public class CodeGenerator {
 
         //策略设置
         StrategyConfig strategyConfig = new StrategyConfig();
-        strategyConfig.setInclude("pms_product_attribute_value");  //设置当前参与生成的表名，参数为可变参数
+        strategyConfig.setInclude("pms_product_ladder", "pms_product_full_reduction");  //设置当前参与生成的表名，参数为可变参数
 //        strategyConfig.setTablePrefix("tbl_");  //设置数据库表的前缀名称，模块名 = 数据库表名 - 前缀名  例如： User = tbl_user - tbl_
         strategyConfig.setRestControllerStyle(true);    //设置是否启用Rest风格
         strategyConfig.setVersionFieldName("version");  //设置乐观锁字段名

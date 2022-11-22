@@ -32,7 +32,8 @@ public class PmsProductAttributeController {
                   @RequestParam(value = "pageNum",  required = false) Integer pageNum){
         LambdaQueryWrapper<PmsProductAttribute> wrapper = new LambdaQueryWrapper<>();
         wrapper.like(StringUtils.isNotEmpty(pmsProductAttributeParam.getName()), PmsProductAttribute::getName,pmsProductAttributeParam.getName());
-        wrapper.eq(pmsProductAttributeParam.getProductAttributeCategoryId()!=null, PmsProductAttribute::getProductAttributeCategoryId,pmsProductAttributeParam.getProductAttributeCategoryId());
+        wrapper.eq(pmsProductAttributeParam.getProductAttributeCategoryId() != null, PmsProductAttribute::getProductAttributeCategoryId, pmsProductAttributeParam.getProductAttributeCategoryId());
+        wrapper.eq(pmsProductAttributeParam.getType() != null, PmsProductAttribute::getType, pmsProductAttributeParam.getType());
         wrapper.orderByAsc(PmsProductAttribute::getId);
 
         if(pageNum==null||pageSize==null){
