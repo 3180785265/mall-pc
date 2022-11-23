@@ -11,6 +11,7 @@ import com.itheima.mall.service.IPmsProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -57,6 +58,13 @@ public class PmsProductController {
         adminProductService.create(pmsProductParam);
         return R.success("保存成功");
 
+    }
+
+    @PutMapping("/update/{id}")
+    public R update(@PathVariable("id") Long id, @Validated @RequestBody PmsProductParam pmsProductParam) {
+        pmsProductParam.setId(id);
+        adminProductService.update(pmsProductParam);
+        return R.success("修改成功");
     }
 
     @GetMapping("/{id}")

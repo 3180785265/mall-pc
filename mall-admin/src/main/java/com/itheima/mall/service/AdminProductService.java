@@ -1,6 +1,7 @@
 package com.itheima.mall.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.itheima.mall.domain.*;
 import com.itheima.mall.dto.PmsProductParam;
@@ -37,6 +38,9 @@ public class AdminProductService {
     @Autowired
     private ICmsSubjectProductRelationService iCmsSubjectProductRelationService;
 
+    @Autowired
+    private IPmsProductAttributeValueService iPmsProductAttributeValueService;
+
 
     @Transactional
     public void create(PmsProductParam pmsProductParam) {
@@ -59,11 +63,15 @@ public class AdminProductService {
         //sku 库存设置
         insertList(iPmsSkuStockService, pmsProductParam.getSkuStockList(), productId);
 
+        //商品参数
+        insertList(iPmsProductAttributeValueService, pmsProductParam.getProductAttributeValueList(), productId);
+
         //专题和商品关系
         insertList(iCmsSubjectProductRelationService, pmsProductParam.getSubjectProductRelationList(), productId);
 
         //优选专区和商品的关系
         insertList(iCmsPrefrenceAreaProductRelationService, pmsProductParam.getPrefrenceAreaProductRelationList(), productId);
+
 
     }
 
@@ -92,6 +100,7 @@ public class AdminProductService {
     }
 
     public PmsProductParam getById(Long id) {
+        //商品基础信息
         PmsProduct pmsProduct = iPmsProductService.getById(id);
         PmsProductParam pmsProductParam = new PmsProductParam();
         BeanUtils.copyProperties(pmsProduct, pmsProductParam);
@@ -100,6 +109,12 @@ public class AdminProductService {
         pmsMemberPriceLambdaQueryWrapper.eq(PmsMemberPrice::getProductId, id);
         // 商品会员
         List<PmsMemberPrice> memberPriceList = iPmsMemberPriceService.list(pmsMemberPriceLambdaQueryWrapper);
+
+
+        //商品参数
+        LambdaQueryWrapper<PmsProductAttributeValue> pmsProductAttributeValueLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        pmsProductAttributeValueLambdaQueryWrapper.eq(PmsProductAttributeValue::getProductId, id);
+        List<PmsProductAttributeValue> productAttributeValueList = iPmsProductAttributeValueService.list(pmsProductAttributeValueLambdaQueryWrapper);
 
 
         //阶梯价格
@@ -135,7 +150,65 @@ public class AdminProductService {
         pmsProductParam.setSkuStockList(skuStockList);
         pmsProductParam.setSubjectProductRelationList(subjectProductRelationList);
         pmsProductParam.setPrefrenceAreaProductRelationList(prefrenceAreaProductRelationList);
+        pmsProductParam.setProductAttributeValueList(productAttributeValueList);
         return pmsProductParam;
+    }
+
+    @Transactional
+    public void update(PmsProductParam pmsProductParam) {
+        Long productId = pmsProductParam.getId();
+        PmsProduct pmsProduct = new PmsProduct();
+        BeanUtils.copyProperties(pmsProductParam, pmsProduct);
+
+        //修改商品基础信息
+        iPmsProductService.updateById(pmsProduct);
+
+        //修改商品会员信息
+        LambdaUpdateWrapper<PmsMemberPrice> pmsMemberPriceLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        pmsMemberPriceLambdaUpdateWrapper.eq(PmsMemberPrice::getProductId, productId);
+        iPmsMemberPriceService.remove(pmsMemberPriceLambdaUpdateWrapper);
+
+        insertList(iPmsMemberPriceService, pmsProductParam.getMemberPriceList(), productId);
+
+
+        //阶梯价格
+
+        LambdaUpdateWrapper<PmsProductLadder> pmsProductLadderLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        pmsProductLadderLambdaUpdateWrapper.eq(PmsProductLadder::getProductId, productId);
+        iPmsProductLadderService.remove(pmsProductLadderLambdaUpdateWrapper);
+        insertList(iPmsProductLadderService, pmsProductParam.getProductLadderList(), productId);
+
+        //满减价格
+        LambdaUpdateWrapper<PmsProductFullReduction> pmsProductFullReductionLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        pmsProductFullReductionLambdaUpdateWrapper.eq(PmsProductFullReduction::getProductId, productId);
+        iPmsProductFullReductionService.remove(pmsProductFullReductionLambdaUpdateWrapper);
+        insertList(iPmsProductFullReductionService, pmsProductParam.getProductFullReductionList(), productId);
+
+        //sku 库存设置
+        LambdaUpdateWrapper<PmsSkuStock> pmsSkuStockLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        pmsSkuStockLambdaUpdateWrapper.eq(PmsSkuStock::getProductId, productId);
+        iPmsSkuStockService.remove(pmsSkuStockLambdaUpdateWrapper);
+        insertList(iPmsSkuStockService, pmsProductParam.getSkuStockList(), productId);
+
+        //商品参数
+        LambdaUpdateWrapper<PmsProductAttributeValue> pmsProductAttributeValueLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        pmsProductAttributeValueLambdaUpdateWrapper.eq(PmsProductAttributeValue::getProductId, productId);
+        iPmsProductAttributeValueService.remove(pmsProductAttributeValueLambdaUpdateWrapper);
+        insertList(iPmsProductAttributeValueService, pmsProductParam.getProductAttributeValueList(), productId);
+
+        //专题和商品关系
+        LambdaUpdateWrapper<CmsSubjectProductRelation> productRelationLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        productRelationLambdaUpdateWrapper.eq(CmsSubjectProductRelation::getProductId, productId);
+        iCmsSubjectProductRelationService.remove(productRelationLambdaUpdateWrapper);
+        insertList(iCmsSubjectProductRelationService, pmsProductParam.getSubjectProductRelationList(), productId);
+
+        //优选专区和商品的关系
+        LambdaUpdateWrapper<CmsPrefrenceAreaProductRelation> prefrenceAreaProductRelationLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        prefrenceAreaProductRelationLambdaUpdateWrapper.eq(CmsPrefrenceAreaProductRelation::getProductId, productId);
+        iCmsPrefrenceAreaProductRelationService.remove(prefrenceAreaProductRelationLambdaUpdateWrapper);
+        insertList(iCmsPrefrenceAreaProductRelationService, pmsProductParam.getPrefrenceAreaProductRelationList(), productId);
+
+
     }
 }
 
