@@ -41,12 +41,20 @@ public class AdminProductService {
     @Autowired
     private IPmsProductAttributeValueService iPmsProductAttributeValueService;
 
+    @Autowired
+    private IPmsBrandService iPmsBrandService;
 
     @Transactional
     public void create(PmsProductParam pmsProductParam) {
         // 商品基础数据
         PmsProduct pmsProduct = pmsProductParam;
         iPmsProductService.save(pmsProduct);
+
+        //品牌关联商品数量+1
+        LambdaUpdateWrapper<PmsBrand> pmsBrandLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        pmsBrandLambdaUpdateWrapper.eq(PmsBrand::getId, pmsProductParam.getBrandId());
+        pmsBrandLambdaUpdateWrapper.setSql("product_count+=" + 1);
+        iPmsBrandService.update();
 
         Long productId = pmsProduct.getId();
 
