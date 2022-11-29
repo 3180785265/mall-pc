@@ -1,4 +1,4 @@
-package com.itheima.mall.config;
+package com.itheima.mall.controller;
 
 import com.itheima.mall.common.R;
 import com.itheima.mall.domain.PmsPortalProductDetail;

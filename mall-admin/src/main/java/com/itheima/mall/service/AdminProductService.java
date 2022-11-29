@@ -193,6 +193,7 @@ public class AdminProductService {
         insertList(iPmsProductFullReductionService, pmsProductParam.getProductFullReductionList(), productId);
 
         //sku 库存设置
+        // TODO: 2022/11/28  如果前端有传id的对象执行修改逻辑，没有id的对象执行新增逻辑
         LambdaUpdateWrapper<PmsSkuStock> pmsSkuStockLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
         pmsSkuStockLambdaUpdateWrapper.eq(PmsSkuStock::getProductId, productId);
         iPmsSkuStockService.remove(pmsSkuStockLambdaUpdateWrapper);
