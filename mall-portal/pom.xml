@@ -21,6 +21,12 @@
             <artifactId>mall-mbg</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+
+        <!--AMQP依赖，继承RabbitMQ-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

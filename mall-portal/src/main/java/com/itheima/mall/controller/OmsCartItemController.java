@@ -77,6 +77,7 @@ public class OmsCartItemController {
             cartItem.setMemberId(umsMember.getId());
             cartItem.setProductPic(skuStock.getPic());
             cartItem.setCreateDate(LocalDateTime.now());
+            cartItem.setProductAttr(skuStock.getSpData());
             iOmsCartItemService.save(cartItem);
         }
 
@@ -85,7 +86,6 @@ public class OmsCartItemController {
     }
 
     /**
-     * 添加商品到购物车
      *
      * @return
      */

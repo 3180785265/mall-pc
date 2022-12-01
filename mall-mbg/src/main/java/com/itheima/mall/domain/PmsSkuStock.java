@@ -1,12 +1,12 @@
 package com.itheima.mall.domain;
 
-import java.math.BigDecimal;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.Version;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * <p>
@@ -68,6 +68,12 @@ public class PmsSkuStock implements Serializable {
      * 商品销售属性，json格式
      */
     private String spData;
+
+
+    /**
+     * 乐观锁的版本号
+     */
+    private Integer version;
 
 
 }

@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -196,8 +197,16 @@ public class AdminProductService {
         // TODO: 2022/11/28  如果前端有传id的对象执行修改逻辑，没有id的对象执行新增逻辑
         LambdaUpdateWrapper<PmsSkuStock> pmsSkuStockLambdaUpdateWrapper = new LambdaUpdateWrapper<>();
         pmsSkuStockLambdaUpdateWrapper.eq(PmsSkuStock::getProductId, productId);
-        iPmsSkuStockService.remove(pmsSkuStockLambdaUpdateWrapper);
-        insertList(iPmsSkuStockService, pmsProductParam.getSkuStockList(), productId);
+        List<Long> stockIds = pmsProductParam.getSkuStockList().stream().map(item -> item.getId()).collect(Collectors.toList());
+        //如果sku的id不为空，则是要更新数据
+        if (CollectionUtils.isNotEmpty(stockIds) && stockIds.get(0) != null) {
+            iPmsSkuStockService.updateBatchById(pmsProductParam.getSkuStockList());
+        } else {
+            //如果sku的id为空，则是要将旧数据删除，重新添加新数据
+            iPmsSkuStockService.remove(pmsSkuStockLambdaUpdateWrapper);
+            insertList(iPmsSkuStockService, pmsProductParam.getSkuStockList(), productId);
+        }
+
 
         //商品参数
         LambdaUpdateWrapper<PmsProductAttributeValue> pmsProductAttributeValueLambdaUpdateWrapper = new LambdaUpdateWrapper<>();

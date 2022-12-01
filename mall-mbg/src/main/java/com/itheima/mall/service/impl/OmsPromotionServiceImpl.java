@@ -34,7 +34,7 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
 
         //1.查询所有商品的促销信息
         List<Long> productIds = cartItemList.stream().map(cartItem -> cartItem.getProductId()).collect(Collectors.toList());
-        List<PromotionProduct> promotionProductList = getPromotionProductList(productIds);//(包括了商品spu(获取)，商品sku，商品折扣,商品满减)
+        List<PromotionProduct> promotionProductList = getPromotionProductList(productIds);//(包括了商品spu，商品sku，商品折扣,商品满减)
 
 
         //2.1先根据productId对CartItem进行分组，以spu为单位进行计算优惠
@@ -124,7 +124,7 @@ public class OmsPromotionServiceImpl implements OmsPromotionService {
                 productLadderList.sort((PmsProductLadder p1, PmsProductLadder p2) -> {
                     return p2.getCount() - p1.getCount();
                 });
-                List<PmsProductLadder> productLadders = productLadderList.stream().filter(item -> item.getCount() < quantity).collect(Collectors.toList());
+                List<PmsProductLadder> productLadders = productLadderList.stream().filter(item -> item.getCount() <= quantity).collect(Collectors.toList());
                 //如果没有折扣
                 if (CollectionUtils.isNotEmpty(productLadders)) {
                     PmsProductLadder pmsProductLadder = productLadders.get(0);

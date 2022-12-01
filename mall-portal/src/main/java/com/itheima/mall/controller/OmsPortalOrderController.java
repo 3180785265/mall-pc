@@ -31,5 +31,6 @@ public class OmsPortalOrderController {
     @PostMapping("/generateOrder")
     public R generateOrder(@RequestBody OrderParam orderParam) {
         Map<String, Object> result = portalOrderService.generateOrder(orderParam);
+        return R.success(result);
     }
 }
